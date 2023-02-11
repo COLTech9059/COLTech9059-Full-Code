@@ -6,10 +6,15 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import frc.robot.Constants;
 
 public class Manipulator {
-    public DoubleSolenoid piston = Constants.piston;
     public Compressor compressor = new Compressor(1, PneumaticsModuleType.REVPH);
+    public DoubleSolenoid piston = Constants.piston;
     public DoubleSolenoid piston2 = Constants.piston2;
-        //test
+    public DoubleSolenoid piston3 = Constants.piston3;
+
+    public void toggleGrab() {
+        piston3.toggle();
+    }
+
     public void toggleHeight() {
         piston2.toggle();
     }

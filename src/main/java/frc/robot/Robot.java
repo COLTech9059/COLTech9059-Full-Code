@@ -93,9 +93,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopInit() {
 
-    //Pneumatics
-    if (IO.dController.getRightBumper() == true) manipulator.toggleExtension();
-    if (IO.dController.getRightTriggerAxis() > 0.1) manipulator.toggleHeight();
+    
 
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
@@ -117,8 +115,11 @@ public class Robot extends TimedRobot {
 
     drivetrain.HamsterDrive.arcadeDrive(forwardPower, turnPower);
 
-    
-    //if (IO.dController.getRightBumper() == true) manipulator.piston.toggle();
+  //Pneumatics
+  if (IO.dController.getRightBumper() == true) manipulator.toggleExtension();
+  if (IO.dController.getRightTriggerAxis() > 0.1) manipulator.toggleHeight();  
+  if (IO.dController.getXButtonPressed() == true) manipulator.toggleGrab();
+
   }
 
   @Override

@@ -25,7 +25,7 @@ public final class Constants {
     //piston
     public static final DoubleSolenoid piston = new DoubleSolenoid(PneumaticsModuleType.REVPH, 0, 1);
     public static final DoubleSolenoid piston2 = new DoubleSolenoid(PneumaticsModuleType.REVPH, 2, 3);
-
+    public static final DoubleSolenoid piston3 = new DoubleSolenoid(PneumaticsModuleType.REVPH, 4, 5);
 
 
 }

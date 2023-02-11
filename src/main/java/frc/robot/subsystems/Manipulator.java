@@ -9,7 +9,7 @@ public class Manipulator {
     public DoubleSolenoid piston = Constants.piston;
     public Compressor compressor = new Compressor(1, PneumaticsModuleType.REVPH);
     public DoubleSolenoid piston2 = Constants.piston2;
-        
+        //test
     public void toggleHeight() {
         piston2.toggle();
     }

@@ -4,7 +4,8 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
@@ -28,7 +29,11 @@ public class Robot extends TimedRobot {
   public static DriveTrain drivetrain = new DriveTrain();
   public static IO io = new IO();
 
-  public Compressor compressor = new Compressor(1, PneumaticsModuleType.REVPH);
+  public static final DoubleSolenoid piston = new DoubleSolenoid(PneumaticsModuleType.REVPH, 0, 1);
+    public static final DoubleSolenoid piston2 = new DoubleSolenoid(PneumaticsModuleType.REVPH, 2, 3);
+
+  public Encoder Lencoder = new Encoder(0, 1, false, Encoder.EncodingType.k4X);
+  public Encoder Rencoder = new Encoder(0, 1, false, Encoder.EncodingType.k4X);
 
   private final Timer time = new Timer();
   /**
@@ -39,8 +44,9 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
+    Lencoder.reset();
+    Rencoder.reset();
 
-    compressor.enableDigital();
   }
 
   /**
@@ -57,6 +63,10 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
+
+    //Configures the encoder to return a distance of 1.5 for every 1 pulses(full rotations of encoder/motor)
+    Lencoder.setDistancePerPulse(1.5/1);
+    Rencoder.setDistancePerPulse(1.5/1);
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
@@ -84,12 +94,13 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousPeriodic() {
 
-    if (time.get() < 3) {
-      //negative speeds must be used to go forward for reasons
+    //for auto, use the distance in feet multiplied by 12(to get inches)
+    if (Lencoder.getDistance() < 1 * 12) {
+      //negative speeds must be used to go forward in auto because reasons
       drivetrain.HamsterDrive.arcadeDrive(-0.8, 0);
     }
-    if (time.get() > 3 && time.get() < 5) {
-      drivetrain.HamsterDrive.arcadeDrive(0.83, 0);
+    if (Lencoder.getDistance() > 1 * 12 && Lencoder.getDistance() < 12.5 * 12) {
+      drivetrain.HamsterDrive.arcadeDrive(0.8, 0);
     } 
   
   } 
@@ -122,10 +133,12 @@ public class Robot extends TimedRobot {
     drivetrain.HamsterDrive.arcadeDrive(forwardPower, turnPower);
 
   //Pneumatics
-  if (IO.dController.getRightBumper() == true) manipulator.toggleExtension();
-  if (IO.dController.getRightTriggerAxis() > 0.1) manipulator.toggleHeight();  
-  if (IO.dController.getXButtonPressed() == true) manipulator.toggleGrab();
+    if (IO.dController.getRightTriggerAxis() > 0.2) manipulator.extendManipulator(); else manipulator.stopExtension();
+    if (IO.dController.getRightTriggerAxis() > 0.2) manipulator.toggleManipulatorHeight();
+    if (IO.dController.getRightBumper()) manipulator.toggleGrab();
 
+  double LeftEncoderDistance = Lencoder.getDistance();
+  double RightEncoderDistance = Rencoder.getDistance();
   }
 
   @Override

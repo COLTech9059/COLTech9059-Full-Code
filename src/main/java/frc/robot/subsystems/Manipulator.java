@@ -1,28 +1,31 @@
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Robot;
 
 public class Manipulator extends SubsystemBase{
     
     
     
-    //pistons
-    public static final DoubleSolenoid piston = new DoubleSolenoid(PneumaticsModuleType.REVPH, 0, 1);
-    public static final DoubleSolenoid piston2 = new DoubleSolenoid(PneumaticsModuleType.REVPH, 2, 3);
-    public static final DoubleSolenoid piston3 = new DoubleSolenoid(PneumaticsModuleType.REVPH, 4, 5);
+    //Subsystem elements
 
+    public static final CANSparkMax manipulatorMotor = new CANSparkMax(7, MotorType.kBrushless);
+
+    public void extendManipulator() {
+        manipulatorMotor.set(.5);
+    }
+    public void stopExtension() {
+        manipulatorMotor.set(0);
+    }
+    public void toggleManipulatorHeight() {
+        Robot.piston.toggle();
+    }
     public void toggleGrab() {
-        piston3.toggle();
+        Robot.piston2.toggle();
     }
-
-    public void toggleHeight() {
-        piston2.toggle();
-    }
-
-    public void toggleExtension() {
-        piston.toggle();
-    }
-
 }
+
+

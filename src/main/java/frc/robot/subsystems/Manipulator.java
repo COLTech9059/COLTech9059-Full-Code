@@ -14,17 +14,21 @@ public class Manipulator extends SubsystemBase{
 
     public static final CANSparkMax manipulatorMotor = new CANSparkMax(7, MotorType.kBrushless);
 
-    public void extendManipulator() {
-        manipulatorMotor.set(.5);
+    public void extendLadder() {
+        manipulatorMotor.set(0.5);
     }
-    public void stopExtension() {
+    public void retractLadder() {
+        manipulatorMotor.set(-0.5);
+    } 
+    public void stopLadder() {
         manipulatorMotor.set(0);
-    }
+    } 
     public void toggleManipulatorHeight() {
-        Robot.piston.toggle();
+        Robot.raisePiston.toggle();
+        Robot.raisePiston2.toggle();
     }
-    public void toggleGrab() {
-        Robot.piston2.toggle();
+    public void toggleGrabber() {
+        Robot.piston3.toggle();
     }
 }
 

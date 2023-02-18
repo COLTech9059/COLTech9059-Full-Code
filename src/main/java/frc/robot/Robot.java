@@ -29,11 +29,12 @@ public class Robot extends TimedRobot {
   public static DriveTrain drivetrain = new DriveTrain();
   public static IO io = new IO();
 
-  public static final DoubleSolenoid piston = new DoubleSolenoid(PneumaticsModuleType.REVPH, 0, 1);
-    public static final DoubleSolenoid piston2 = new DoubleSolenoid(PneumaticsModuleType.REVPH, 2, 3);
+  public static final DoubleSolenoid raisePiston = new DoubleSolenoid(PneumaticsModuleType.REVPH, 0, 1);
+  public static final DoubleSolenoid raisePiston2 = new DoubleSolenoid(PneumaticsModuleType.REVPH, 2, 3);
+  public static final DoubleSolenoid piston3 = new DoubleSolenoid(PneumaticsModuleType.REVPH, 4, 5);
 
   public Encoder Lencoder = new Encoder(0, 1, false, Encoder.EncodingType.k4X);
-  public Encoder Rencoder = new Encoder(0, 1, false, Encoder.EncodingType.k4X);
+  public Encoder Rencoder = new Encoder(2, 3, false, Encoder.EncodingType.k4X);
 
   private final Timer time = new Timer();
   /**
@@ -93,7 +94,7 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
-
+    
     //for auto, use the distance in feet multiplied by 12(to get inches)
     if (Lencoder.getDistance() < 1 * 12) {
       //negative speeds must be used to go forward in auto because reasons
@@ -127,18 +128,14 @@ public class Robot extends TimedRobot {
     double forwardPower = IO.dController.getLeftY();
     double turn = IO.dController.getRightX();
     double turnPower = turn *= 0.5;
-    
-    if (IO.dController.getLeftBumper()) turnPower *= 2;
 
     drivetrain.HamsterDrive.arcadeDrive(forwardPower, turnPower);
 
-  //Pneumatics
-    if (IO.dController.getRightTriggerAxis() > 0.2) manipulator.extendManipulator(); else manipulator.stopExtension();
-    if (IO.dController.getRightTriggerAxis() > 0.2) manipulator.toggleManipulatorHeight();
-    if (IO.dController.getRightBumper()) manipulator.toggleGrab();
-
-  double LeftEncoderDistance = Lencoder.getDistance();
-  double RightEncoderDistance = Rencoder.getDistance();
+  //Pneumatics/Manipulator controls
+    if (IO.dController.getRightTriggerAxis() > 0.2) manipulator.extendLadder(); else manipulator.stopLadder();
+    if (IO.dController.getLeftTriggerAxis() > 0.2) manipulator.retractLadder(); else manipulator.stopLadder();
+    if (IO.dController.getRightBumper()) manipulator.toggleManipulatorHeight();
+    if (IO.dController.getLeftBumper()) manipulator.toggleGrabber();
   }
 
   @Override

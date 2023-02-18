@@ -45,8 +45,6 @@ public class DriveTrain extends SubsystemBase {
         double turn = dController.getRightX();
         double turnPower = turn *= 0.5;
 
-        if (dController.getLeftBumper()) turnPower *= 2;
-
         HamsterDrive.arcadeDrive(forwardPower, turnPower);
     }
 

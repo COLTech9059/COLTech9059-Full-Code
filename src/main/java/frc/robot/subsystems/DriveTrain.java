@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -21,7 +22,8 @@ public class DriveTrain extends SubsystemBase {
     private CANSparkMax LeftFollower = new CANSparkMax(Constants.leftFPort, MotorType.kBrushed);
     private CANSparkMax RightFollower = new CANSparkMax(Constants.rightFPort, MotorType.kBrushed);
    
-   
+    public Encoder Lencoder = new Encoder(0, 1, false, Encoder.EncodingType.k4X);
+    public Encoder Rencoder = new Encoder(2, 3, false, Encoder.EncodingType.k4X);
 
     public final DifferentialDrive HamsterDrive = new DifferentialDrive(LeftPrimary, RightPrimary);
 
@@ -44,7 +46,7 @@ public class DriveTrain extends SubsystemBase {
         double forwardPower = dController.getLeftY();
         double turn = dController.getRightX();
         double turnPower = turn *= 0.5;
-
+    
         HamsterDrive.arcadeDrive(forwardPower, turnPower);
     }
 

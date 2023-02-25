@@ -19,6 +19,6 @@ public final class Constants {
     public static final int rightPPort = 3;
     public static final int leftFPort = 4;
     public static final int rightFPort = 5;
-
+    public static final int manipulatorMotorPort = 7;
 
 }

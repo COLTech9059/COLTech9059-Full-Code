@@ -6,7 +6,6 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
@@ -29,14 +28,10 @@ public class Robot extends TimedRobot {
   public static DriveTrain drivetrain = new DriveTrain();
   public static IO io = new IO();
 
-  public final Compressor compressor = new Compressor(1, PneumaticsModuleType.REVPH);
+  public final Compressor compressor = new Compressor(01, PneumaticsModuleType.REVPH);
 
-  public static final DoubleSolenoid raisePiston = new DoubleSolenoid(01,PneumaticsModuleType.REVPH, 0, 1);
-  public static final DoubleSolenoid raisePiston2 = new DoubleSolenoid(01, PneumaticsModuleType.REVPH, 2, 3);
-  public static final DoubleSolenoid piston3 = new DoubleSolenoid(01, PneumaticsModuleType.REVPH, 4, 5);
-
-  public Encoder Lencoder = new Encoder(0, 1, false, Encoder.EncodingType.k4X);
-  public Encoder Rencoder = new Encoder(2, 3, false, Encoder.EncodingType.k4X);
+  public static final DoubleSolenoid raisePistons = new DoubleSolenoid(01,PneumaticsModuleType.REVPH, 0, 1);
+  public static final DoubleSolenoid grabPiston = new DoubleSolenoid(01, PneumaticsModuleType.REVPH, 4, 5);
 
   private final Timer time = new Timer();
   /**
@@ -47,12 +42,12 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
-    Lencoder.reset();
-    Rencoder.reset();
+    drivetrain.Lencoder.reset();
+    drivetrain.Rencoder.reset();
 
     //Configures the encoder to return a distance of 1.36 for every 1 pulses(full rotations of encoder/motor)
-    Lencoder.setDistancePerPulse(1.36/1);
-    Rencoder.setDistancePerPulse(1.36/1);
+    drivetrain.Lencoder.setDistancePerPulse(1.36/1);
+    drivetrain.Rencoder.setDistancePerPulse(1.36/1);
   }
 
   /**
@@ -64,6 +59,10 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
+
+    if (compressor.getPressure() >= 115) compressor.disable();
+    if (compressor.getPressure() <= 90) compressor.enableDigital();
+
     // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
     // commands, running already-scheduled commands, removing finished or interrupted commands,
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
@@ -99,11 +98,11 @@ public class Robot extends TimedRobot {
   public void autonomousPeriodic() {
     
       //for auto, use the distance in feet multiplied by 12(to get inches)
-    if (Lencoder.getDistance() < 1 * 12) {
+    if (drivetrain.Lencoder.getDistance() < 1 * 12) {
       //negative speeds must be used to go forward in auto because reasons
       drivetrain.HamsterDrive.arcadeDrive(-0.8, 0);
     }
-    if (Lencoder.getDistance() > 1 * 12 && Lencoder.getDistance() < 12.5 * 12) {
+    if (drivetrain.Lencoder.getDistance() > 1 * 12 && drivetrain.Lencoder.getDistance() < 12.5 * 12) {
       drivetrain.HamsterDrive.arcadeDrive(0.8, 0);
     } 
   
@@ -111,7 +110,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-    compressor.enableDigital();
+    
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove

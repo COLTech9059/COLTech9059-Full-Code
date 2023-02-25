@@ -123,7 +123,13 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    double forwardPower = IO.dController.getLeftY();
+    double forward = IO.dController.getLeftY();
+    double change = 0;
+    double forwardPower = forward + change;
+
+    if (forward < 0) change = 0.1;
+    if (forward > 0) change = -0.1;
+
     double turn = IO.dController.getRightX();
     double turnPower = turn *= 0.5;
 

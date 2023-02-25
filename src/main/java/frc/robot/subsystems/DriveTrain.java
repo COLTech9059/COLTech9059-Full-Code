@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.IO;
 
 public class DriveTrain extends SubsystemBase {
     //creates the motor controllers for HamsterDrive
@@ -43,10 +44,16 @@ public class DriveTrain extends SubsystemBase {
     }
 
     public void arcadeDrive(XboxController dController) {
-        double forwardPower = dController.getLeftY();
-        double turn = dController.getRightX();
-        double turnPower = turn *= 0.5;
+        double forward = IO.dController.getLeftY();
+        double change = 0;
+        double forwardPower = forward + change;
     
+        if (forward < 0) change = 0.1;
+        if (forward > 0) change = -0.1;
+
+        double turn = IO.dController.getRightX();
+        double turnPower = turn *= 0.5;
+
         HamsterDrive.arcadeDrive(forwardPower, turnPower);
     }
 

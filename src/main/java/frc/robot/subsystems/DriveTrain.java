@@ -48,8 +48,8 @@ public class DriveTrain extends SubsystemBase {
         double change = 0;
         double forwardPower = forward + change;
     
-        if (forward < 0) change = 0.1;
-        if (forward > 0) change = -0.1;
+        if (forward < 0) change = 0.2;
+        if (forward > 0) change = -0.2;
 
         double turn = IO.dController.getRightX();
         double turnPower = turn *= 0.5;
@@ -62,3 +62,7 @@ public class DriveTrain extends SubsystemBase {
     }
 
 }
+
+
+
+

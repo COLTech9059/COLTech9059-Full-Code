@@ -31,7 +31,7 @@ public class Robot extends TimedRobot {
   public final Compressor compressor = new Compressor(01, PneumaticsModuleType.REVPH);
 
   public static final DoubleSolenoid raisePistons = new DoubleSolenoid(01,PneumaticsModuleType.REVPH, 0, 1);
-  public static final DoubleSolenoid grabPiston = new DoubleSolenoid(01, PneumaticsModuleType.REVPH, 4, 5);
+  public static final DoubleSolenoid grabPiston = new DoubleSolenoid(01, PneumaticsModuleType.REVPH, 2, 3);
 
   private final Timer time = new Timer();
   /**
@@ -127,8 +127,8 @@ public class Robot extends TimedRobot {
     double change = 0;
     double forwardPower = forward + change;
 
-    if (forward < 0) change = 0.1;
-    if (forward > 0) change = -0.1;
+    if (forward < 0) change = 0.2;
+    if (forward > 0) change = -0.2;
 
     double turn = IO.dController.getRightX();
     double turnPower = turn *= 0.5;
@@ -136,10 +136,11 @@ public class Robot extends TimedRobot {
     drivetrain.HamsterDrive.arcadeDrive(forwardPower, turnPower);
 
   //Pneumatics/Manipulator controls
-    if (IO.dController.getRightTriggerAxis() > 0.2) manipulator.extendLadder(); else manipulator.stopLadder();
-    if (IO.dController.getLeftTriggerAxis() > 0.2) manipulator.retractLadder(); else manipulator.stopLadder();
+    if (IO.dController.getRightTriggerAxis() > 0.2 && manipulator.limitSwitch.get() == false) manipulator.extendLadder(); else manipulator.stopLadder();
+    if (IO.dController.getLeftTriggerAxis() > 0.2 && manipulator.rearLimitSwitch.get() == false) manipulator.retractLadder(); else manipulator.stopLadder();
     if (IO.dController.getRightBumper()) manipulator.toggleManipulatorHeight();
     if (IO.dController.getLeftBumper()) manipulator.toggleGrabber();
+    
   }
 
   @Override

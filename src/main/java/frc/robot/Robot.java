@@ -40,12 +40,13 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
-    // autonomous chooser on the dashboard.
+  /** Instantiate our RobotContainer.  This will perform all our button bindings, and put our
+    * autonomous chooser on the dashboard. 
+    */
     drivetrain.Lencoder.reset();
     drivetrain.Rencoder.reset();
 
-    //Configures the encoder to return a distance of 1.36 for every 1 pulses(full rotations of encoder/motor)
+    // Configures the encoder to return a distance of 1.36 for every 1 pulses(full rotations of encoder/motor)
     drivetrain.Lencoder.setDistancePerPulse(1.36/1);
     drivetrain.Rencoder.setDistancePerPulse(1.36/1);
   }
@@ -63,10 +64,11 @@ public class Robot extends TimedRobot {
     if (compressor.getPressure() >= 115) compressor.disable();
     if (compressor.getPressure() <= 90) compressor.enableDigital();
 
-    // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
-    // commands, running already-scheduled commands, removing finished or interrupted commands,
-    // and running subsystem periodic() methods.  This must be called from the robot's periodic
-    // block in order for anything in the Command-based framework to work.
+  /** Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
+    * commands, running already-scheduled commands, removing finished or interrupted commands,
+    * and running subsystem periodic() methods.  This must be called from the robot's periodic
+    * block in order for anything in the Command-based framework to work.
+    */
     CommandScheduler.getInstance().run();
 
 
@@ -87,7 +89,7 @@ public class Robot extends TimedRobot {
 
     time.reset();
     time.start();
-        // schedule the autonomous command (example)
+        // Schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
@@ -111,10 +113,11 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopInit() {
     
-    // This makes sure that the autonomous stops running when
-    // teleop starts running. If you want the autonomous to
-    // continue until interrupted by another command, remove
-    // this line or comment it out.
+  /** This makes sure that the autonomous stops running when
+    * teleop starts running. If you want the autonomous to
+    * continue until interrupted by another command, remove
+    * this line or comment it out.
+    */
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
@@ -123,19 +126,27 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
+
+    // Get the value of the Y-Axis on the joystick
     double forward = IO.dController.getLeftY();
+
+    // Adjust Speed/Power
     double change = 0;
     double forwardPower = forward + change;
 
     if (forward < 0) change = 0.2;
     if (forward > 0) change = -0.2;
 
+    // Get the value of the X-Axis on the joystick
     double turn = IO.dController.getRightX();
+
+    // Adjust Turn Power
     double turnPower = turn *= 0.5;
 
+    // Drive the Robot with <forwardPower> and <turnPower>
     drivetrain.HamsterDrive.arcadeDrive(forwardPower, turnPower);
 
-  //Pneumatics/Manipulator controls
+    // Pneumatics + Manipulator Controls
     if (IO.dController.getRightTriggerAxis() > 0.2 && manipulator.limitSwitch.get() == false) manipulator.extendLadder(); else manipulator.stopLadder();
     if (IO.dController.getLeftTriggerAxis() > 0.2 && manipulator.rearLimitSwitch.get() == false) manipulator.retractLadder(); else manipulator.stopLadder();
     if (IO.dController.getRightBumper()) manipulator.toggleManipulatorHeight();

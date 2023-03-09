@@ -22,6 +22,8 @@ import frc.robot.subsystems.DriveTrain;
  * project.
  */
 public class Robot extends TimedRobot {
+
+  // Declare all the objects for hardware components
   private Command m_autonomousCommand;
 
   public static Manipulator manipulator = new Manipulator();

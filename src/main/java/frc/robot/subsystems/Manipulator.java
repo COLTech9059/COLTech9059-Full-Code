@@ -21,13 +21,13 @@ public class Manipulator extends SubsystemBase{
 
     // Methods to control the manipulator motor
     public void extendLadder() {
-        manipulatorMotor.set(0.05);
+        manipulatorMotor.set(0.40);
     }
     public void retractLadder() {
-        manipulatorMotor.set(-0.05);
+        manipulatorMotor.set(-0.40);
     } 
     public void stopLadder() {
-        manipulatorMotor.set(0);
+        manipulatorMotor.set(0.0);
     } 
 
     // Methods to toggle the grabber and piston height using a command-based approach

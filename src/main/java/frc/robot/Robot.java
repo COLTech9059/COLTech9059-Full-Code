@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.Manipulator;
@@ -45,7 +46,7 @@ public class Robot extends TimedRobot {
     drivetrain.Lencoder.reset();
     drivetrain.Rencoder.reset();
 
-    //Configures the encoder to return a distance of 1.36 for every 1 pulses(full rotations of encoder/motor)
+    //Configures the encoder to return a distance of 1.36 inches for every 1 pulse(full rotations of encoder/motor)
     drivetrain.Lencoder.setDistancePerPulse(1.36/1);
     drivetrain.Rencoder.setDistancePerPulse(1.36/1);
   }
@@ -62,6 +63,9 @@ public class Robot extends TimedRobot {
 
     if (compressor.getPressure() >= 115) compressor.disable();
     if (compressor.getPressure() <= 90) compressor.enableDigital();
+
+    SmartDashboard.putNumber("Left Encoder RPM", drivetrain.Lencoder.getRate());
+    SmartDashboard.putNumber("Right Encoder RPM", drivetrain.Rencoder.getRate());
 
     // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
     // commands, running already-scheduled commands, removing finished or interrupted commands,
@@ -136,8 +140,11 @@ public class Robot extends TimedRobot {
     drivetrain.HamsterDrive.arcadeDrive(forwardPower, turnPower);
 
   //Pneumatics/Manipulator controls
-    if (IO.dController.getRightTriggerAxis() > 0.2 && manipulator.limitSwitch.get() == false) manipulator.extendLadder(); else manipulator.stopLadder();
-    if (IO.dController.getLeftTriggerAxis() > 0.2 && manipulator.rearLimitSwitch.get() == false) manipulator.retractLadder(); else manipulator.stopLadder();
+  // && manipulator.limitSwitch.get() == false
+  // && manipulator.rearLimitSwitch.get() == false
+    if (IO.dController.getRightTriggerAxis() > 0.2) manipulator.extendLadder(); 
+    if (IO.dController.getLeftTriggerAxis() > 0.2) manipulator.retractLadder(); 
+    if (IO.dController.getLeftTriggerAxis() < 0.2 && IO.dController.getRightTriggerAxis() < 0.2) manipulator.stopLadder();
     if (IO.dController.getRightBumper()) manipulator.toggleManipulatorHeight();
     if (IO.dController.getLeftBumper()) manipulator.toggleGrabber();
     

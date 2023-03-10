@@ -15,17 +15,17 @@ public class Manipulator extends SubsystemBase{
     //Subsystem elements
 
     public static final CANSparkMax manipulatorMotor = new CANSparkMax(Constants.manipulatorMotorPort, MotorType.kBrushless);
-    public final DigitalInput limitSwitch = new DigitalInput(0);
-    public final DigitalInput rearLimitSwitch = new DigitalInput(1);
+    public final DigitalInput limitSwitch = new DigitalInput(4);
+    public final DigitalInput rearLimitSwitch = new DigitalInput(5);
 
     public void extendLadder() {
-        manipulatorMotor.set(0.05);
+        manipulatorMotor.set(0.40);
     }
     public void retractLadder() {
-        manipulatorMotor.set(-0.05);
+        manipulatorMotor.set(-0.40);
     } 
     public void stopLadder() {
-        manipulatorMotor.set(0);
+        manipulatorMotor.set(0.0);
     } 
     public void toggleManipulatorHeight() {
         Robot.raisePistons.toggle();

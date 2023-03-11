@@ -25,6 +25,7 @@ import frc.robot.subsystems.DriveTrain;
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
+  // Create the objects for the robot.java file (they don't really work or belong anywhere else)
   public static Manipulator manipulator = new Manipulator();
   public static DriveTrain drivetrain = new DriveTrain();
   public static IO io = new IO();
@@ -41,12 +42,11 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
-    // autonomous chooser on the dashboard.
+    // Resets the encoders
     drivetrain.Lencoder.reset();
     drivetrain.Rencoder.reset();
 
-    //Configures the encoder to return a distance of 1.36 inches for every 1 pulse(full rotations of encoder/motor)
+    //Configures the encoder to return a distance of 1.36 inches for every 1 pulse(each pulse is a full rotations of encoder/motor)
     drivetrain.Lencoder.setDistancePerPulse(1.36/1);
     drivetrain.Rencoder.setDistancePerPulse(1.36/1);
   }
@@ -60,10 +60,11 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
-
+    // Create an if loop to make sure the compressor never goes over 115 PSI and not below 90PSI once it is pressurized
     if (compressor.getPressure() >= 115) compressor.disable();
     if (compressor.getPressure() <= 90) compressor.enableDigital();
 
+    // Display the encoder speed values on teh dashboard
     SmartDashboard.putNumber("Left Encoder RPM", drivetrain.Lencoder.getRate());
     SmartDashboard.putNumber("Right Encoder RPM", drivetrain.Rencoder.getRate());
 
@@ -100,10 +101,11 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
-    
-      //for auto, use the distance in feet multiplied by 12(to get inches)
+      //These if statements control all of our autonomous program, and we use distance to determine when things should happen
+
+      // For auto, use the distance in feet multiplied by 12(to get inches)
     if (drivetrain.Lencoder.getDistance() < 1 * 12) {
-      //negative speeds must be used to go forward in auto because reasons
+      // Negative speeds must be used to go forward in auto
       drivetrain.HamsterDrive.arcadeDrive(-0.8, 0);
     }
     if (drivetrain.Lencoder.getDistance() > 1 * 12 && drivetrain.Lencoder.getDistance() < 12.5 * 12) {
@@ -127,6 +129,7 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
+    // All of this logic is the same as in DriveTrain.java
     double forward = IO.dController.getLeftY();
     double change = 0;
     double forwardPower = forward + change;
@@ -140,10 +143,8 @@ public class Robot extends TimedRobot {
     drivetrain.HamsterDrive.arcadeDrive(forwardPower, turnPower);
 
   //Pneumatics/Manipulator controls
-  // && manipulator.limitSwitch.get() == false
-  // && manipulator.rearLimitSwitch.get() == false
-    if (IO.dController.getRightTriggerAxis() > 0.2) manipulator.extendLadder(); 
-    if (IO.dController.getLeftTriggerAxis() > 0.2) manipulator.retractLadder(); 
+    if (IO.dController.getRightTriggerAxis() > 0.2) manipulator.extendLadder() /*  && manipulator.limitSwitch.get() == false */; 
+    if (IO.dController.getLeftTriggerAxis() > 0.2 /*  && manipulator.rearLimitSwitch.get() == false */) manipulator.retractLadder(); 
     if (IO.dController.getLeftTriggerAxis() < 0.2 && IO.dController.getRightTriggerAxis() < 0.2) manipulator.stopLadder();
     if (IO.dController.getRightBumper()) manipulator.toggleManipulatorHeight();
     if (IO.dController.getLeftBumper()) manipulator.toggleGrabber();

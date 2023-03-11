@@ -15,9 +15,8 @@ import frc.robot.Constants;
 import frc.robot.IO;
 
 public class DriveTrain extends SubsystemBase {
-    //creates the motor controllers for HamsterDrive
-
-
+    
+    // Creates the objects for HamsterDrive
     private CANSparkMax LeftPrimary = new CANSparkMax(Constants.leftPPort, MotorType.kBrushed);
     private CANSparkMax RightPrimary = new CANSparkMax(Constants.rightPPort, MotorType.kBrushed);
     private CANSparkMax LeftFollower = new CANSparkMax(Constants.leftFPort, MotorType.kBrushed);
@@ -30,19 +29,20 @@ public class DriveTrain extends SubsystemBase {
 
     public DriveTrain() {
         HamsterDrive.setDeadband(0.1);
-
+        // Reset motor controller settings to default
         LeftPrimary.restoreFactoryDefaults();
         RightPrimary.restoreFactoryDefaults();
         LeftFollower.restoreFactoryDefaults();
         RightFollower.restoreFactoryDefaults(); 
     
+        // Set followers to follow their primaries
         LeftFollower.follow(LeftPrimary);
         RightFollower.follow(RightPrimary);
     
-        
+        // Set the right side as inverted
         RightPrimary.setInverted(true);
     }
-
+    // Creates the arcade drive function that we use
     public void arcadeDrive(XboxController dController) {
         double forward = IO.dController.getLeftY();
         double change = 0;

@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Robot;
 
 public class Manipulator extends SubsystemBase{
     
@@ -40,9 +41,13 @@ public class Manipulator extends SubsystemBase{
     // Methods to toggle the grabber and piston height using a command-based approach
     public void toggleManipulatorHeight() {
         raisePistons.toggle();
+        Robot.raiseabTime.reset();
+        Robot.raiseTime.start();
     }
     // Create the function to toggle the grabber
     public void toggleGrabber() {
         grabPiston.toggle();
+        Robot.grabTime.reset();
+        Robot.grabTime.start();
     }
 }

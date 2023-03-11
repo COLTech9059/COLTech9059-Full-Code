@@ -34,9 +34,10 @@ public class Robot extends TimedRobot {
 
   public final Compressor compressor = new Compressor(01, PneumaticsModuleType.REVPH);
 
-  
+  private Timer raiseTime = new Timer();
+  public Timer grabTime = new Timer();
 
-  private final Timer time = new Timer();
+  private final Timer timer = new Timer();
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -56,6 +57,13 @@ public class Robot extends TimedRobot {
     // Set the state of the solenoids so they can be toggled later
     Manipulator.raisePistons.set(Value.kForward);
     Manipulator.grabPiston.set(Value.kForward);
+
+    timer.reset();
+    raiseTime.reset();
+    grabTime.reset();
+
+    grabTime.start();
+    raiseTime.start();
   }
 
   /**
@@ -97,8 +105,8 @@ public class Robot extends TimedRobot {
 
      
 
-    time.reset();
-    time.start();
+    timer.reset();
+    timer.start();
         // Schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
@@ -157,14 +165,13 @@ public class Robot extends TimedRobot {
     // Drive the Robot with <forwardPower> and <turnPower>
     drivetrain.HamsterDrive.arcadeDrive(forwardPower, turnPower);
 
-    // Pneumatics + Manipulator Controls
-    // && manipulator.limitSwitch.get() == false
-    // && manipulator.rearLimitSwitch.get() == false
-    if (IO.dController.getRightTriggerAxis() > 0.2) manipulator.extendLadder(); 
-    if (IO.dController.getLeftTriggerAxis() > 0.2) manipulator.retractLadder(); 
+    // Pneumatics/Manipulator Controls
+    if (IO.dController.getRightTriggerAxis() > 0.2 /*  && manipulator.limitSwitch.get() == false */) manipulator.extendLadder(); 
+    if (IO.dController.getLeftTriggerAxis() > 0.2 /*  && manipulator.rearLimitSwitch.get() == false */) manipulator.retractLadder(); 
     if (IO.dController.getLeftTriggerAxis() < 0.2 && IO.dController.getRightTriggerAxis() < 0.2) manipulator.stopLadder();
-    if (IO.dController.getRightBumper()) manipulator.toggleManipulatorHeight();
-    if (IO.dController.getLeftBumper()) manipulator.toggleGrabber();
+
+    if (IO.dController.getRightBumper() && raiseTime.get() > 1) manipulator.toggleManipulatorHeight();
+    if (IO.dController.getLeftBumper() && grabTime.get() > 1) manipulator.toggleGrabber();
     
   }
 

@@ -68,6 +68,9 @@ public class Robot extends TimedRobot {
     if (compressor.getPressure() >= 115) compressor.disable();
     if (compressor.getPressure() <= 90) compressor.enableDigital();
 
+    // Displays the Left and Right encoder rates on the dashboard with the specified names
+    SmartDashboard.putNumber("Left Encoder Rate", drivetrain.Lencoder.getRate());
+    SmartDashboard.putNumber("Right Encoder Rate", drivetrain.Rencoder.getRate());
   /** Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
     * commands, running already-scheduled commands, removing finished or interrupted commands,
     * and running subsystem periodic() methods.  This must be called from the robot's periodic

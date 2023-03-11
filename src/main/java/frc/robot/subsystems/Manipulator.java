@@ -15,9 +15,9 @@ public class Manipulator extends SubsystemBase{
     // Creates a motor controller object for the manipulator motor
     public static final CANSparkMax manipulatorMotor = new CANSparkMax(Constants.manipulatorMotorPort, MotorType.kBrushless);
     // Creates a digital input object for the limit switch
-    public final DigitalInput limitSwitch = new DigitalInput(0);
+    public final DigitalInput limitSwitch = new DigitalInput(4);
     // Creates a digital input object for the rear limit switch
-    public final DigitalInput rearLimitSwitch = new DigitalInput(1);
+    public final DigitalInput rearLimitSwitch = new DigitalInput(5);
 
     // Methods to control the manipulator motor
     public void extendLadder() {

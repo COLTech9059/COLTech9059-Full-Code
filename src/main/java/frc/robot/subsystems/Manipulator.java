@@ -4,9 +4,10 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.Robot;
 
 public class Manipulator extends SubsystemBase{
     
@@ -14,10 +15,14 @@ public class Manipulator extends SubsystemBase{
 
     // Creates a motor controller object for the manipulator motor
     public static final CANSparkMax manipulatorMotor = new CANSparkMax(Constants.manipulatorMotorPort, MotorType.kBrushless);
-    // Creates a digital input object for the limit switch
+    // Creates a digital input object for the front limit switch
     public final DigitalInput limitSwitch = new DigitalInput(4);
     // Creates a digital input object for the rear limit switch
     public final DigitalInput rearLimitSwitch = new DigitalInput(5);
+
+    // Create the double solenoid objects
+    public static final DoubleSolenoid raisePistons = new DoubleSolenoid(01,PneumaticsModuleType.REVPH, 0, 1);
+    public static final DoubleSolenoid grabPiston = new DoubleSolenoid(01, PneumaticsModuleType.REVPH, 2, 3);
 
     // Methods to control the manipulator motor
     public void extendLadder() {
@@ -34,10 +39,10 @@ public class Manipulator extends SubsystemBase{
 
     // Methods to toggle the grabber and piston height using a command-based approach
     public void toggleManipulatorHeight() {
-        Robot.raisePistons.toggle();
+        raisePistons.toggle();
     }
     // Create the function to toggle the grabber
     public void toggleGrabber() {
-        Robot.grabPiston.toggle();
+        grabPiston.toggle();
     }
 }

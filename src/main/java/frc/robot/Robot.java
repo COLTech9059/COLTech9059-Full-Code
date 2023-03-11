@@ -5,10 +5,10 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.Compressor;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -34,8 +34,7 @@ public class Robot extends TimedRobot {
 
   public final Compressor compressor = new Compressor(01, PneumaticsModuleType.REVPH);
 
-  public static final DoubleSolenoid raisePistons = new DoubleSolenoid(01,PneumaticsModuleType.REVPH, 0, 1);
-  public static final DoubleSolenoid grabPiston = new DoubleSolenoid(01, PneumaticsModuleType.REVPH, 2, 3);
+  
 
   private final Timer time = new Timer();
   /**
@@ -53,6 +52,10 @@ public class Robot extends TimedRobot {
     //Configures the encoder to return a distance of 1.36 inches for every 1 pulse(each pulse is a full rotations of encoder/motor)
     drivetrain.Lencoder.setDistancePerPulse(1.36/1);
     drivetrain.Rencoder.setDistancePerPulse(1.36/1);
+
+    // Set the state of the solenoids so they can be toggled later
+    Manipulator.raisePistons.set(Value.kForward);
+    Manipulator.grabPiston.set(Value.kForward);
   }
 
   /**

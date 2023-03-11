@@ -10,14 +10,16 @@ import frc.robot.Robot;
 
 public class Manipulator extends SubsystemBase{
     
-    
-    
-    // Create the objects for the manipulator
-    public static final CANSparkMax manipulatorMotor = new CANSparkMax(Constants.manipulatorMotorPort, MotorType.kBrushless);
-    public final DigitalInput limitSwitch = new DigitalInput(4);
-    public final DigitalInput rearLimitSwitch = new DigitalInput(5);
+    // Subsystem elements
 
-    // Create the function to extend the ladder
+    // Creates a motor controller object for the manipulator motor
+    public static final CANSparkMax manipulatorMotor = new CANSparkMax(Constants.manipulatorMotorPort, MotorType.kBrushless);
+    // Creates a digital input object for the limit switch
+    public final DigitalInput limitSwitch = new DigitalInput(0);
+    // Creates a digital input object for the rear limit switch
+    public final DigitalInput rearLimitSwitch = new DigitalInput(1);
+
+    // Methods to control the manipulator motor
     public void extendLadder() {
         manipulatorMotor.set(0.40);
     }
@@ -29,7 +31,8 @@ public class Manipulator extends SubsystemBase{
     public void stopLadder() {
         manipulatorMotor.set(0.0);
     } 
-    // Create the function to toggle the manipulator height
+
+    // Methods to toggle the grabber and piston height using a command-based approach
     public void toggleManipulatorHeight() {
         Robot.raisePistons.toggle();
     }
@@ -38,5 +41,3 @@ public class Manipulator extends SubsystemBase{
         Robot.grabPiston.toggle();
     }
 }
-
-

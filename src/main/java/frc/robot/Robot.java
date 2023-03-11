@@ -23,6 +23,8 @@ import frc.robot.subsystems.DriveTrain;
  * project.
  */
 public class Robot extends TimedRobot {
+
+  // Declare all the objects for hardware components
   private Command m_autonomousCommand;
 
   // Create the objects for the robot.java file (they don't really work or belong anywhere else)
@@ -42,7 +44,9 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    // Resets the encoders
+  /** Instantiate our RobotContainer.  This will perform all our button bindings, and put our
+    * autonomous chooser on the dashboard. 
+    */
     drivetrain.Lencoder.reset();
     drivetrain.Rencoder.reset();
 
@@ -64,14 +68,11 @@ public class Robot extends TimedRobot {
     if (compressor.getPressure() >= 115) compressor.disable();
     if (compressor.getPressure() <= 90) compressor.enableDigital();
 
-    // Display the encoder speed values on teh dashboard
-    SmartDashboard.putNumber("Left Encoder RPM", drivetrain.Lencoder.getRate());
-    SmartDashboard.putNumber("Right Encoder RPM", drivetrain.Rencoder.getRate());
-
-    // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
-    // commands, running already-scheduled commands, removing finished or interrupted commands,
-    // and running subsystem periodic() methods.  This must be called from the robot's periodic
-    // block in order for anything in the Command-based framework to work.
+  /** Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
+    * commands, running already-scheduled commands, removing finished or interrupted commands,
+    * and running subsystem periodic() methods.  This must be called from the robot's periodic
+    * block in order for anything in the Command-based framework to work.
+    */
     CommandScheduler.getInstance().run();
 
 
@@ -92,7 +93,7 @@ public class Robot extends TimedRobot {
 
     time.reset();
     time.start();
-        // schedule the autonomous command (example)
+        // Schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
@@ -117,10 +118,11 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopInit() {
     
-    // This makes sure that the autonomous stops running when
-    // teleop starts running. If you want the autonomous to
-    // continue until interrupted by another command, remove
-    // this line or comment it out.
+  /** This makes sure that the autonomous stops running when
+    * teleop starts running. If you want the autonomous to
+    * continue until interrupted by another command, remove
+    * this line or comment it out.
+    */
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
@@ -129,22 +131,31 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    // All of this logic is the same as in DriveTrain.java
+
+    // Get the value of the Y-Axis on the joystick
     double forward = IO.dController.getLeftY();
+
+    // Adjust Speed/Power
     double change = 0;
     double forwardPower = forward + change;
 
     if (forward < 0) change = 0.2;
     if (forward > 0) change = -0.2;
 
+    // Get the value of the X-Axis on the joystick
     double turn = IO.dController.getRightX();
+
+    // Adjust Turn Power
     double turnPower = turn *= 0.5;
 
+    // Drive the Robot with <forwardPower> and <turnPower>
     drivetrain.HamsterDrive.arcadeDrive(forwardPower, turnPower);
 
-  //Pneumatics/Manipulator controls
-    if (IO.dController.getRightTriggerAxis() > 0.2) manipulator.extendLadder() /*  && manipulator.limitSwitch.get() == false */; 
-    if (IO.dController.getLeftTriggerAxis() > 0.2 /*  && manipulator.rearLimitSwitch.get() == false */) manipulator.retractLadder(); 
+    // Pneumatics + Manipulator Controls
+    // && manipulator.limitSwitch.get() == false
+    // && manipulator.rearLimitSwitch.get() == false
+    if (IO.dController.getRightTriggerAxis() > 0.2) manipulator.extendLadder(); 
+    if (IO.dController.getLeftTriggerAxis() > 0.2) manipulator.retractLadder(); 
     if (IO.dController.getLeftTriggerAxis() < 0.2 && IO.dController.getRightTriggerAxis() < 0.2) manipulator.stopLadder();
     if (IO.dController.getRightBumper()) manipulator.toggleManipulatorHeight();
     if (IO.dController.getLeftBumper()) manipulator.toggleGrabber();

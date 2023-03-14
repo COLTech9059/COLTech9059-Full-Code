@@ -47,9 +47,10 @@ public class Robot extends TimedRobot {
     drivetrain.Lencoder.reset();
     drivetrain.Rencoder.reset();
 
-    //Configures the encoder to return a distance of 1.36 inches for every 1 pulse(each pulse is a full rotations of encoder/motor)
-    drivetrain.Lencoder.setDistancePerPulse(1.36/1);
-    drivetrain.Rencoder.setDistancePerPulse(1.36/1);
+    //Configures the encoders to return a distance of 0.68 inches per half pulse 
+    //(or 1.36 inches per full pulse) where each pulse is a full rotation of the encoder/motor)
+    drivetrain.Lencoder.setDistancePerPulse(0.68/0.5);
+    drivetrain.Rencoder.setDistancePerPulse(0.68/0.5);
 
     // Set the state of the solenoids so they can be toggled later
     Manipulator.raisePistons.set(Value.kForward);
@@ -117,10 +118,15 @@ public class Robot extends TimedRobot {
 
       // For auto, use the distance in feet multiplied by 12(to get inches)
     if (drivetrain.Lencoder.getDistance() < 1 * 12) {
+
       // Negative speeds must be used to go forward in auto
+      // Drive forward 1 foot
       drivetrain.HamsterDrive.arcadeDrive(-0.8, 0);
     }
+
     if (drivetrain.Lencoder.getDistance() > 1 * 12 && drivetrain.Lencoder.getDistance() < 12.5 * 12) {
+      
+      // Drive backward for about 12.5 feet
       drivetrain.HamsterDrive.arcadeDrive(0.8, 0);
     } 
   
@@ -146,17 +152,17 @@ public class Robot extends TimedRobot {
     // Get the value of the Y-Axis on the joystick
     double forward = IO.dController.getLeftY();
 
-    // Adjust Speed/Power
+    // Adjust Speed/Power so that it will always be at a max of 80%
     double change = 0;
     double forwardPower = forward + change;
 
     if (forward < 0) change = 0.2;
     if (forward > 0) change = -0.2;
 
-    // Get the value of the X-Axis on the joystick
+    // Set turn to the value of the X-Axis on the joystick
     double turn = IO.dController.getRightX();
 
-    // Adjust Turn Power
+    // Reduce Turn Power
     double turnPower = turn *= 0.5;
 
     // Drive the Robot with <forwardPower> and <turnPower>

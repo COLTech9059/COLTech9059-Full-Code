@@ -169,8 +169,8 @@ public class Robot extends TimedRobot {
     drivetrain.HamsterDrive.arcadeDrive(forwardPower, turnPower);
 
     // Pneumatics/Manipulator Controls
-    if (IO.dController.getRightTriggerAxis() > 0.2 /*  && manipulator.limitSwitch.get() == false */) manipulator.extendLadder(); 
-    if (IO.dController.getLeftTriggerAxis() > 0.2 /*  && manipulator.rearLimitSwitch.get() == false */) manipulator.retractLadder(); 
+    if (IO.dController.getRightTriggerAxis() > 0.2 && manipulator.limitSwitch.get() == false ) manipulator.extendLadder(); 
+    if (IO.dController.getLeftTriggerAxis() > 0.2 && manipulator.rearLimitSwitch.get() == false ) manipulator.retractLadder(); 
     if (IO.dController.getLeftTriggerAxis() < 0.2 && IO.dController.getRightTriggerAxis() < 0.2) manipulator.stopLadder();
 
     if (IO.dController.getRightBumper() && manipulator.raiseTime.get() > 1) manipulator.toggleManipulatorHeight();

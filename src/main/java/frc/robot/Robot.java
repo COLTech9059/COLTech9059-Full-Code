@@ -34,9 +34,6 @@ public class Robot extends TimedRobot {
 
   public final Compressor compressor = new Compressor(01, PneumaticsModuleType.REVPH);
 
-  private Timer raiseTime = new Timer();
-  public Timer grabTime = new Timer();
-
   private final Timer timer = new Timer();
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -59,11 +56,11 @@ public class Robot extends TimedRobot {
     Manipulator.grabPiston.set(Value.kForward);
 
     timer.reset();
-    raiseTime.reset();
-    grabTime.reset();
+    manipulator.raiseTime.reset();
+    manipulator.grabTime.reset();
 
-    grabTime.start();
-    raiseTime.start();
+    manipulator.grabTime.start();
+    manipulator.raiseTime.start();
   }
 
   /**
@@ -170,8 +167,8 @@ public class Robot extends TimedRobot {
     if (IO.dController.getLeftTriggerAxis() > 0.2 /*  && manipulator.rearLimitSwitch.get() == false */) manipulator.retractLadder(); 
     if (IO.dController.getLeftTriggerAxis() < 0.2 && IO.dController.getRightTriggerAxis() < 0.2) manipulator.stopLadder();
 
-    if (IO.dController.getRightBumper() && raiseTime.get() > 1) manipulator.toggleManipulatorHeight();
-    if (IO.dController.getLeftBumper() && grabTime.get() > 1) manipulator.toggleGrabber();
+    if (IO.dController.getRightBumper() && manipulator.raiseTime.get() > 1) manipulator.toggleManipulatorHeight();
+    if (IO.dController.getLeftBumper() && manipulator.grabTime.get() > 1) manipulator.toggleGrabber();
     
   }
 

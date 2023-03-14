@@ -6,6 +6,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
@@ -25,6 +26,10 @@ public class Manipulator extends SubsystemBase{
     public static final DoubleSolenoid raisePistons = new DoubleSolenoid(01,PneumaticsModuleType.REVPH, 0, 1);
     public static final DoubleSolenoid grabPiston = new DoubleSolenoid(01, PneumaticsModuleType.REVPH, 2, 3);
 
+    // Create the timers for solenoids
+    public Timer raiseTime = new Timer();
+    public Timer grabTime = new Timer();
+    
     // Methods to control the manipulator motor
     public void extendLadder() {
         manipulatorMotor.set(0.40);
@@ -41,13 +46,13 @@ public class Manipulator extends SubsystemBase{
     // Methods to toggle the grabber and piston height using a command-based approach
     public void toggleManipulatorHeight() {
         raisePistons.toggle();
-        Robot.raiseabTime.reset();
-        Robot.raiseTime.start();
+        raiseTime.reset();
+        raiseTime.start();
     }
     // Create the function to toggle the grabber
     public void toggleGrabber() {
         grabPiston.toggle();
-        Robot.grabTime.reset();
-        Robot.grabTime.start();
+        grabTime.reset();
+        grabTime.start();
     }
 }

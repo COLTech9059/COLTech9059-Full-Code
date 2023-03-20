@@ -4,11 +4,11 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.Compressor;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
+//import edu.wpi.first.wpilibj.Compressor;
+//import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
+//import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -32,9 +32,12 @@ public class Robot extends TimedRobot {
   public static DriveTrain drivetrain = new DriveTrain();
   public static IO io = new IO();
 
-  public final Compressor compressor = new Compressor(01, PneumaticsModuleType.REVPH);
+  //public final Compressor compressor = new Compressor(01, PneumaticsModuleType.REVPH);
 
   private final Timer timer = new Timer();
+
+  // Create the Autonomous control variable
+  private int autoMode = 0;
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -53,8 +56,8 @@ public class Robot extends TimedRobot {
     drivetrain.Rencoder.setDistancePerPulse(0.68/0.5);
 
     // Set the state of the solenoids so they can be toggled later
-    Manipulator.raisePistons.set(Value.kForward);
-    Manipulator.grabPiston.set(Value.kForward);
+    //Manipulator.raisePistons.set(Value.kForward);
+    //Manipulator.grabPiston.set(Value.kForward);
 
     timer.reset();
     manipulator.raiseTime.reset();
@@ -74,8 +77,8 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     // Create an if loop to make sure the compressor never goes over 115 PSI and not below 90PSI once it is pressurized
-    if (compressor.getPressure() >= 115) compressor.disable();
-    if (compressor.getPressure() <= 90) compressor.enableDigital();
+    //if (compressor.getPressure() >= 115) compressor.disable();
+    // if (compressor.getPressure() <= 90) compressor.enableDigital();
 
     // Displays the Left and Right encoder rates on the dashboard with the specified names
     SmartDashboard.putNumber("Left Encoder Rate", drivetrain.Lencoder.getRate());
@@ -101,35 +104,35 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
 
-     
-
     timer.reset();
     timer.start();
-        // Schedule the autonomous command (example)
+        /*  Schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
+    */
   }
 
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
-      //These if statements control all of our autonomous program, and we use distance to determine when things should happen
+  // This variable will control which autonomous will run   
+  // 0 = No autonomous, 1 = Autonomous for left or right position, 2 = Autonomous for middle position (Charge Station)
+  autoMode = 0;
 
-      // For auto, use the distance in feet multiplied by 12(to get inches)
-    if (drivetrain.Lencoder.getDistance() < 1 * 12) {
-
-      // Negative speeds must be used to go forward in auto
-      // Drive forward 1 foot
-      drivetrain.HamsterDrive.arcadeDrive(-0.8, 0);
-    }
-
-    if (drivetrain.Lencoder.getDistance() > 1 * 12 && drivetrain.Lencoder.getDistance() < 12.5 * 12) {
-      
-      // Drive backward for about 12.5 feet
-      drivetrain.HamsterDrive.arcadeDrive(0.8, 0);
+      //These if statements control all of our autonomous program, and we use timers to control them
+      if (timer.get() < 6.2 && autoMode == 1) {
+      drivetrain.HamsterDrive.arcadeDrive(-0.3, 0.0, false);
+      System.out.println(drivetrain.Lencoder.getDistance());
     } 
-  
+
+    if (timer.get() < 3.4 && autoMode == 2) {
+      drivetrain.HamsterDrive.arcadeDrive(-0.3, 0.0, false);
+      System.out.println(drivetrain.Lencoder.getDistance());
+    }
+    if (autoMode == 0 || timer.get() > 6.2 || autoMode == 2 && timer.get() > 3.4) {
+      drivetrain.HamsterDrive.arcadeDrive(0, 0, false);
+    }
   } 
 
   @Override
@@ -163,18 +166,18 @@ public class Robot extends TimedRobot {
     double turn = IO.dController.getRightX();
 
     // Reduce Turn Power
-    double turnPower = turn *= 0.5;
+    double turnPower = turn *= 0.73;
 
     // Drive the Robot with <forwardPower> and <turnPower>
     drivetrain.HamsterDrive.arcadeDrive(forwardPower, turnPower);
 
     // Pneumatics/Manipulator Controls
-    if (IO.dController.getRightTriggerAxis() > 0.2 && manipulator.limitSwitch.get() == false ) manipulator.extendLadder(); 
-    if (IO.dController.getLeftTriggerAxis() > 0.2 && manipulator.rearLimitSwitch.get() == false ) manipulator.retractLadder(); 
-    if (IO.dController.getLeftTriggerAxis() < 0.2 && IO.dController.getRightTriggerAxis() < 0.2) manipulator.stopLadder();
-
-    if (IO.dController.getRightBumper() && manipulator.raiseTime.get() > 1) manipulator.toggleManipulatorHeight();
-    if (IO.dController.getLeftBumper() && manipulator.grabTime.get() > 1) manipulator.toggleGrabber();
+    // if (IO.dController.getRightTriggerAxis() > 0.2 && !manipulator.limitSwitch.get()) manipulator.extendLadder(); else manipulator.stopLadder(); 
+    // if (IO.dController.getLeftTriggerAxis() > 0.2 && manipulator.rearLimitSwitch.get() == false ) manipulator.retractLadder(); 
+    // if (IO.dController.getLeftTriggerAxis() < 0.2 && IO.dController.getRightTriggerAxis() < 0.2) manipulator.stopLadder();
+ 
+    // if (IO.dController.getRightBumper() && manipulator.raiseTime.get() > 1) manipulator.toggleManipulatorHeight();
+    // if (IO.dController.getLeftBumper() && manipulator.grabTime.get() > 1) manipulator.toggleGrabber();
     
   }
 

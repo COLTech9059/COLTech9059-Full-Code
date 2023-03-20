@@ -64,11 +64,8 @@ public class Robot extends TimedRobot {
     //Manipulator.grabPiston.set(Value.kForward);
 
     timer.reset();
-    manipulator.raiseTime.reset();
     manipulator.grabTime.reset();
-
     manipulator.grabTime.start();
-    manipulator.raiseTime.start();
   }
 
   /**
@@ -129,17 +126,17 @@ public class Robot extends TimedRobot {
         servo.setAngle(90);
 
       drivetrain.HamsterDrive.arcadeDrive(-0.3, 0.0, false);
-      System.out.println(drivetrain.Lencoder.getDistance());
     } 
 
     if (timer.get() < 3.4 && autoMode == 2) {
       servo.setAngle(90);
 
       drivetrain.HamsterDrive.arcadeDrive(-0.3, 0.0, false);
-      System.out.println(drivetrain.Lencoder.getDistance());
     }
-    if (autoMode == 0 || timer.get() > 6.2 || autoMode == 2 && timer.get() > 3.4) {
+    if (autoMode == 0) {
       drivetrain.HamsterDrive.arcadeDrive(0, 0, false);
+
+      servo.setAngle(90);
     }
   } 
 

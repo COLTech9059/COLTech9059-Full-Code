@@ -25,28 +25,25 @@ public class Manipulator extends SubsystemBase{
     // public static final DoubleSolenoid raisePistons = new DoubleSolenoid(01,PneumaticsModuleType.REVPH, 0, 1);
     // public static final DoubleSolenoid grabPiston = new DoubleSolenoid(01, PneumaticsModuleType.REVPH, 2, 3);
 
-    // Create the timers for solenoids
-    public Timer raiseTime = new Timer();
+    // Create the timer for solenoids
     public Timer grabTime = new Timer();
     
     // Methods to control the manipulator motor
-    public void extendLadder() {
-        //manipulatorMotor.set(0.40);
+    public void rotateArmForward() {
+        manipulatorMotor.set(0.40);
     }
-    // Create the function to retract the ladder
-    public void retractLadder() {
-        // manipulatorMotor.set(-0.40);
+    // Create the function to rotate the arm backwards
+    public void rotateArmBackward() {
+        manipulatorMotor.set(-0.40);
     } 
-    // Create the function to stop the ladder
-    public void stopLadder() {
-        // manipulatorMotor.set(0.0);
+    // Create the function to stop the arm
+    public void stopArm() {
+        manipulatorMotor.set(0.0);
     } 
 
     // Methods to toggle the grabber and piston height using a command-based approach
     public void toggleManipulatorHeight() {
         // raisePistons.toggle();
-        raiseTime.reset();
-        raiseTime.start();
     }
     // Create the function to toggle the grabber
     public void toggleGrabber() {

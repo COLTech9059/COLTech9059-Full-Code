@@ -126,14 +126,14 @@ public class Robot extends TimedRobot {
 
       //These if statements control all of our autonomous program, and we use timers to control them
       if (timer.get() < 6.2 && autoMode == 1) {
-        servo.set(0.5);
+        servo.setAngle(90);
 
       drivetrain.HamsterDrive.arcadeDrive(-0.3, 0.0, false);
       System.out.println(drivetrain.Lencoder.getDistance());
     } 
 
     if (timer.get() < 3.4 && autoMode == 2) {
-      servo.set(0.5);
+      servo.setAngle(90);
 
       drivetrain.HamsterDrive.arcadeDrive(-0.3, 0.0, false);
       System.out.println(drivetrain.Lencoder.getDistance());

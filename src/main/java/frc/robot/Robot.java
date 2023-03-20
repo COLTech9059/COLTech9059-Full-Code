@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.Servo;
 //import edu.wpi.first.wpilibj.Compressor;
 //import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -33,6 +34,9 @@ public class Robot extends TimedRobot {
   public static IO io = new IO();
 
   //public final Compressor compressor = new Compressor(01, PneumaticsModuleType.REVPH);
+
+  // Create the servo object on PWM port 0
+  Servo servo = new Servo(0);
 
   private final Timer timer = new Timer();
 
@@ -122,11 +126,15 @@ public class Robot extends TimedRobot {
 
       //These if statements control all of our autonomous program, and we use timers to control them
       if (timer.get() < 6.2 && autoMode == 1) {
+        servo.set(0.5);
+
       drivetrain.HamsterDrive.arcadeDrive(-0.3, 0.0, false);
       System.out.println(drivetrain.Lencoder.getDistance());
     } 
 
     if (timer.get() < 3.4 && autoMode == 2) {
+      servo.set(0.5);
+
       drivetrain.HamsterDrive.arcadeDrive(-0.3, 0.0, false);
       System.out.println(drivetrain.Lencoder.getDistance());
     }

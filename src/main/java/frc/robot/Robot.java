@@ -4,11 +4,13 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.Servo;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 //import edu.wpi.first.wpilibj.Compressor;
 //import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 //import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -35,8 +37,8 @@ public class Robot extends TimedRobot {
 
   //public final Compressor compressor = new Compressor(01, PneumaticsModuleType.REVPH);
 
-  // Create the servo object on PWM port 0
-  Servo servo = new Servo(0);
+  // Create the cube piston object on PH hub ports 4 and 5
+  private static DoubleSolenoid cubePiston = new DoubleSolenoid(1, PneumaticsModuleType.REVPH, 4, 5);
 
   private final Timer timer = new Timer();
 
@@ -66,6 +68,8 @@ public class Robot extends TimedRobot {
     timer.reset();
     manipulator.grabTime.reset();
     manipulator.grabTime.start();
+
+    cubePiston.set(Value.kReverse);
   }
 
   /**
@@ -115,28 +119,37 @@ public class Robot extends TimedRobot {
   }
 
   /** This function is called periodically during autonomous. */
-  @Override
-  public void autonomousPeriodic() {
-  // This variable will control which autonomous will run   
-  // 0 = No autonomous, 1 = Autonomous for left or right position, 2 = Autonomous for middle position (Charge Station)
-  autoMode = 0;
+   @Override
+   public void autonomousPeriodic() {
+    /**  This variable will control which autonomous will run   
+    * 0 = No autonomous, 1 = Autonomous for left or right position, 2 = Autonomous for middle position (Charge Station)
+    */
+    autoMode = 2;
 
-      //These if statements control all of our autonomous program, and we use timers to control them
-      if (timer.get() < 6.2 && autoMode == 1) {
-        servo.setAngle(90);
+    // These if statements control all of our autonomous program, and we use timers to control them
+
+    // Auto for Left and Right sides of the Charge Station
+    if (timer.get() < 6.2 && autoMode == 1) {
+      cubePiston.set(Value.kForward);
+      cubePiston.set(Value.kReverse);
 
       drivetrain.HamsterDrive.arcadeDrive(-0.3, 0.0, false);
     } 
 
+    // Auto for engaging to the Charge Station 
     if (timer.get() < 3.4 && autoMode == 2) {
-      servo.setAngle(90);
+      cubePiston.set(Value.kForward);
+      cubePiston.set(Value.kReverse);
 
       drivetrain.HamsterDrive.arcadeDrive(-0.3, 0.0, false);
     }
+
+    // No Auto if autoMode is equal to 0
     if (autoMode == 0) {
       drivetrain.HamsterDrive.arcadeDrive(0, 0, false);
 
-      servo.setAngle(90);
+      cubePiston.set(Value.kForward);
+      cubePiston.set(Value.kReverse);
     }
   } 
 

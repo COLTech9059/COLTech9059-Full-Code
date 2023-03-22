@@ -19,6 +19,7 @@ import frc.robot.subsystems.Manipulator;
 import frc.robot.subsystems.DriveTrain;
 
 
+
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
  * each mode, as described in the TimedRobot documentation. If you change the name of this class or
@@ -41,7 +42,8 @@ public class Robot extends TimedRobot {
   private static DoubleSolenoid cubePiston = new DoubleSolenoid(1, PneumaticsModuleType.REVPH, 4, 5);
 
   private final Timer timer = new Timer();
-
+  private final Timer timer2 = new Timer();
+  private final Timer cubeTimer = new Timer();
   // Create the Autonomous control variable
   private int autoMode = 0;
   /**
@@ -66,6 +68,8 @@ public class Robot extends TimedRobot {
     //Manipulator.grabPiston.set(Value.kForward);
 
     timer.reset();
+    cubeTimer.reset();
+    cubeTimer.start();
     manipulator.grabTime.reset();
     manipulator.grabTime.start();
 
@@ -111,6 +115,10 @@ public class Robot extends TimedRobot {
 
     timer.reset();
     timer.start();
+
+    // 0 = No autonomous, 1 = Autonomous for left or right position, 2 = Autonomous for middle position (Charge Station)
+    autoMode = 1;
+
         /*  Schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
@@ -122,34 +130,42 @@ public class Robot extends TimedRobot {
    @Override
    public void autonomousPeriodic() {
     /**  This variable will control which autonomous will run   
-    * 0 = No autonomous, 1 = Autonomous for left or right position, 2 = Autonomous for middle position (Charge Station)
+    * 
     */
-    autoMode = 2;
 
     // These if statements control all of our autonomous program, and we use timers to control them
 
     // Auto for Left and Right sides of the Charge Station
     if (timer.get() < 6.2 && autoMode == 1) {
+      timer2.reset();
       cubePiston.set(Value.kForward);
-      cubePiston.set(Value.kReverse);
+      timer2.start();
+
+      if (timer2.get() > 1.0) cubePiston.set(Value.kReverse);     
 
       drivetrain.HamsterDrive.arcadeDrive(-0.3, 0.0, false);
     } 
 
     // Auto for engaging to the Charge Station 
-    if (timer.get() < 3.4 && autoMode == 2) {
+    if (timer.get() < 5.35 && autoMode == 2) {
+      timer2.reset();
       cubePiston.set(Value.kForward);
-      cubePiston.set(Value.kReverse);
+      timer2.start();
 
-      drivetrain.HamsterDrive.arcadeDrive(-0.3, 0.0, false);
+      if (timer2.get() > 1.0) cubePiston.set(Value.kReverse);
+      
+      drivetrain.HamsterDrive.arcadeDrive(-0.2, 0.0, false);
     }
 
     // No Auto if autoMode is equal to 0
     if (autoMode == 0) {
       drivetrain.HamsterDrive.arcadeDrive(0, 0, false);
-
+      timer2.reset();
       cubePiston.set(Value.kForward);
-      cubePiston.set(Value.kReverse);
+
+      timer2.start();
+
+      if (timer2.get() > 1.0) cubePiston.set(Value.kReverse);
     }
   } 
 
@@ -197,6 +213,8 @@ public class Robot extends TimedRobot {
     // if (IO.dController.getRightBumper() && manipulator.raiseTime.get() > 1) manipulator.toggleManipulatorHeight();
     // if (IO.dController.getLeftBumper() && manipulator.grabTime.get() > 1) manipulator.toggleGrabber();
     
+    if (IO.dController.getLeftBumper()) cubePiston.set(Value.kReverse);
+    // if (IO.dController.getRightBumper()) cubePiston.set(Value.kForward);
   }
 
   @Override

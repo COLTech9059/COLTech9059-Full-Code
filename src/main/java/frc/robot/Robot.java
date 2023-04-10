@@ -6,16 +6,13 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
-//import edu.wpi.first.wpilibj.Compressor;
-//import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
-//import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.subsystems.Manipulator;
 import frc.robot.subsystems.DriveTrain;
 
 
@@ -32,11 +29,10 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   // Create the objects for the robot.java file (they don't really work or belong anywhere else)
-  public static Manipulator manipulator = new Manipulator();
   public static DriveTrain drivetrain = new DriveTrain();
   public static IO io = new IO();
 
-  //public final Compressor compressor = new Compressor(01, PneumaticsModuleType.REVPH);
+  public final Compressor compressor = new Compressor(01, PneumaticsModuleType.REVPH);
 
   // Create the cube piston object on PH hub ports 4 and 5
   private static DoubleSolenoid cubePiston = new DoubleSolenoid(1, PneumaticsModuleType.REVPH, 4, 5);
@@ -70,8 +66,6 @@ public class Robot extends TimedRobot {
     timer.reset();
     cubeTimer.reset();
     cubeTimer.start();
-    manipulator.grabTime.reset();
-    manipulator.grabTime.start();
 
     cubePiston.set(Value.kReverse);
   }
@@ -86,8 +80,8 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     // Create an if loop to make sure the compressor never goes over 115 PSI and not below 90PSI once it is pressurized
-    //if (compressor.getPressure() >= 115) compressor.disable();
-    // if (compressor.getPressure() <= 90) compressor.enableDigital();
+    if (compressor.getPressure() >= 115) compressor.disable();
+    if (compressor.getPressure() <= 90) compressor.enableDigital();
 
     // Displays the Left and Right encoder rates on the dashboard with the specified names
     SmartDashboard.putNumber("Left Encoder Rate", drivetrain.Lencoder.getRate());
@@ -116,14 +110,13 @@ public class Robot extends TimedRobot {
     timer.reset();
     timer.start();
 
-    // 0 = No autonomous, 1 = Autonomous for left or right position, 2 = Autonomous for middle position (Charge Station)
-    autoMode = 1;
-
-        /*  Schedule the autonomous command (example)
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.schedule();
-    }
-    */
+    ////////////////////////////////////////////////////////////////////////////////
+    /**  0 = No driving in autonomous                           ////////////////////
+     * 1 = Autonomous for left or right position                ////////////////////
+     * 2 = Autonomous for middle position (Charge Station)      ////////////////////
+     *//////////////////////////////////////////////////////////////////////////////
+    autoMode = 1;                                               ////////////////////
+    ////////////////////////////////////////////////////////////////////////////////
   }
 
   /** This function is called periodically during autonomous. */
@@ -147,17 +140,15 @@ public class Robot extends TimedRobot {
     } 
 
     // Auto for engaging to the Charge Station 
-    if (timer.get() < 5.35 && autoMode == 2) {
-      timer2.reset();
+    // 3.2 seconds should get to the middle, so overshoot by 1.3
+    if (timer.get() < 2.3 && autoMode == 2) {
       cubePiston.set(Value.kForward);
-      timer2.start();
-
-      if (timer2.get() > 1.0) cubePiston.set(Value.kReverse);
       
-      drivetrain.HamsterDrive.arcadeDrive(-0.2, 0.0, false);
+      if (timer.get() <= 1.33 + 0.75 && timer.get() > 0.75) drivetrain.HamsterDrive.arcadeDrive(-0.7, 0.0, false);
+      //if (timer.get() > 4.25) drivetrain.HamsterDrive.arcadeDrive(0.7, 0.0, false);
     }
 
-    // No Auto if autoMode is equal to 0
+    // No driving in auto if autoMode is equal to 0
     if (autoMode == 0) {
       drivetrain.HamsterDrive.arcadeDrive(0, 0, false);
       timer2.reset();
@@ -177,6 +168,8 @@ public class Robot extends TimedRobot {
     * continue until interrupted by another command, remove
     * this line or comment it out.
     */
+    cubePiston.set(Value.kReverse);
+
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }

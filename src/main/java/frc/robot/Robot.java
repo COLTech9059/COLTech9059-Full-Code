@@ -10,6 +10,8 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
@@ -18,6 +20,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.DriveTrain;
+import edu.wpi.first.wpilibj.AnalogGyro;
 
 
 
@@ -44,6 +47,10 @@ public class Robot extends TimedRobot {
   private final Timer timer = new Timer();
   private final Timer timer2 = new Timer();
   private final Timer cubeTimer = new Timer();
+
+  ADXRS450_Gyro gyro = new ADXRS450_Gyro(SPI.Port.kOnboardCS0);
+
+  
   
     
   // Create the Autonomous control variable
@@ -118,7 +125,7 @@ public class Robot extends TimedRobot {
     timer.reset();
     timer.start();
 
-
+    gyro.calibrate();
     ////////////////////////////////////////////////////////////////////////////////
     /**  0 = No driving in autonomous                           ////////////////////
      * 1 = Autonomous for left or right position                ////////////////////
@@ -138,20 +145,27 @@ public class Robot extends TimedRobot {
     // These if statements control all of our autonomous program, and we use timers to control them
 
     // Auto for Left and Right sides of the Charge Station
-    if (timer.get() < 14.5 && autoMode == 1) {
+    if (timer.get() <= 6.5 && autoMode == 1) {
       timer2.reset();
       cubePiston.set(Value.kForward);
       timer2.start();
-
+      if (timer.get() >= 4) {
       drivetrain.HamsterDrive.arcadeDrive(-0.5, 0.0, false);
+      }
     } 
 
     // Auto for engaging to the Charge Station 
     // 3.2 seconds should get to the middle, so overshoot by 1.3
-    if (timer.get() < 2.3 && autoMode == 2) {
+    if (timer.get() < 14.5 && autoMode == 2) {
       cubePiston.set(Value.kForward);
       
-      if (timer.get() <= 1.33 + 0.75 && timer.get() > 0.75) drivetrain.HamsterDrive.arcadeDrive(-0.7, 0.0, false);
+      if (gyro.getAngle() < -2 ) {
+        drivetrain.HamsterDrive.arcadeDrive(0.3, 0.0, false);
+      } else if (gyro.getAngle() > 2) {
+        drivetrain.HamsterDrive.arcadeDrive(-0.3, 0.0, false);
+      }
+
+      //if (timer.get() <= 1.33 + 0.75 && timer.get() > 0.75) drivetrain.HamsterDrive.arcadeDrive(-0.7, 0.0, false);
       //if (timer.get() > 4.25) drivetrain.HamsterDrive.arcadeDrive(0.7, 0.0, false);
     }
 

@@ -12,6 +12,8 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
+import edu.wpi.first.wpilibj.AddressableLED;
+import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
@@ -50,6 +52,9 @@ public class Robot extends TimedRobot {
 
   ADXRS450_Gyro gyro = new ADXRS450_Gyro(SPI.Port.kOnboardCS0);
 
+
+
+
   
   
     
@@ -59,11 +64,16 @@ public class Robot extends TimedRobot {
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
    */
+
+  AddressableLED m_Led = new AddressableLED(0);
+  AddressableLEDBuffer m_LedBuffer = new AddressableLEDBuffer(256);
+
   @Override
   public void robotInit() {
   /** Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     * autonomous chooser on the dashboard. 
     */
+  
     drivetrain.Lencoder.reset();
     drivetrain.Rencoder.reset();
 
@@ -81,6 +91,13 @@ public class Robot extends TimedRobot {
     cubeTimer.start();
 
     cubePiston.set(Value.kReverse);
+
+    m_Led.setLength(m_LedBuffer.getLength());
+    m_Led.setData(m_LedBuffer);
+
+    m_Led.start();
+
+ 
   }
 
   /**
@@ -234,20 +251,20 @@ public class Robot extends TimedRobot {
     double llTurn = -0.1;
     double minTurn = 0.05;
 
+NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
+NetworkTableEntry tx = table.getEntry("tx");
+NetworkTableEntry ty = table.getEntry("ty");
+NetworkTableEntry ta = table.getEntry("ta");
+
+ //read values periodically
+  double llx = tx.getDouble(0.0);
+  double lly = ty.getDouble(0.0);
+  double llArea = ta.getDouble(0.0);
+
+double headingError = -llx;
+double steeringAdjust = 0.0;
     if (IO.dController.getRightBumper()) {
       
-      NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
-      NetworkTableEntry tx = table.getEntry("tx");
-      NetworkTableEntry ty = table.getEntry("ty");
-      NetworkTableEntry ta = table.getEntry("ta");
-
-       //read values periodically
-        double llx = tx.getDouble(0.0);
-        double lly = ty.getDouble(0.0);
-        double llArea = ta.getDouble(0.0);
-
-      double headingError = -llx;
-      double steeringAdjust = 0.0;
 
       if (Math.abs(headingError) > 1.0) {
         if (headingError < 0.0) {
@@ -264,6 +281,18 @@ public class Robot extends TimedRobot {
         turnPower -= steeringAdjust;
        }
   }
+
+    for(var i = 1; i < m_LedBuffer.getLength(); i++){
+      
+      if (IO.dController.getRightBumper() == false) {
+      m_LedBuffer.setRGB(i-1, 155, 155, 155);
+      m_LedBuffer.setRGB(i, 255, 0, 0);
+      m_LedBuffer.setRGB(i+1, 0, 0, 255);
+      }
+      else if (IO.dController.getRightBumper() == true && headingError <= 0.2 || headingError >= -0.2){
+        m_LedBuffer.setRGB(i, 0, 255, 0);
+      }
+    }
   }
   @Override
   public void testInit() {

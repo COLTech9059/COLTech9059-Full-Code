@@ -8,16 +8,16 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
+//import edu.wpi.first.wpilibj.DoubleSolenoid;
+//import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
-import edu.wpi.first.wpilibj.Compressor;
+//import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
+//import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -41,10 +41,10 @@ public class Robot extends TimedRobot {
   public static DriveTrain drivetrain = new DriveTrain();
   public static IO io = new IO();
 
-  public final Compressor compressor = new Compressor(01, PneumaticsModuleType.REVPH);
+//  public final Compressor compressor = new Compressor(01, PneumaticsModuleType.REVPH);
 
   // Create the cube piston object on PH hub ports 4 and 5
-  private static DoubleSolenoid cubePiston = new DoubleSolenoid(1, PneumaticsModuleType.REVPH, 4, 5);
+  //private static DoubleSolenoid cubePiston = new DoubleSolenoid(1, PneumaticsModuleType.REVPH, 4, 5);
 
   private final Timer timer = new Timer();
   private final Timer timer2 = new Timer();
@@ -90,7 +90,7 @@ public class Robot extends TimedRobot {
     cubeTimer.reset();
     cubeTimer.start();
 
-    cubePiston.set(Value.kReverse);
+    //cubePiston.set(Value.kReverse);
 
     m_Led.setLength(m_LedBuffer.getLength());
     m_Led.setData(m_LedBuffer);
@@ -110,8 +110,8 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     // Create an if loop to make sure the compressor never goes over 115 PSI and not below 90PSI once it is pressurized
-    if (compressor.getPressure() >= 115) compressor.disable();
-    if (compressor.getPressure() <= 90) compressor.enableDigital();
+   // if (compressor.getPressure() >= 115) compressor.disable();
+    //if (compressor.getPressure() <= 90) compressor.enableDigital();
 
     // Displays the Left and Right encoder rates on the dashboard with the specified names
     SmartDashboard.putNumber("Left Encoder Rate", drivetrain.Lencoder.getRate());
@@ -164,7 +164,7 @@ public class Robot extends TimedRobot {
     // Auto for Left and Right sides of the Charge Station
     if (timer.get() <= 6.5 && autoMode == 1) {
       timer2.reset();
-      cubePiston.set(Value.kForward);
+      //cubePiston.set(Value.kForward);
       timer2.start();
       if (timer.get() >= 4) {
       drivetrain.HamsterDrive.arcadeDrive(-0.5, 0.0, false);
@@ -174,7 +174,7 @@ public class Robot extends TimedRobot {
     // Auto for engaging to the Charge Station 
     // 3.2 seconds should get to the middle, so overshoot by 1.3
     if (timer.get() < 14.5 && autoMode == 2) {
-      cubePiston.set(Value.kForward);
+      //cubePiston.set(Value.kForward);
       
       if (gyro.getAngle() < -2 ) {
         drivetrain.HamsterDrive.arcadeDrive(0.3, 0.0, false);
@@ -190,11 +190,11 @@ public class Robot extends TimedRobot {
     if (autoMode == 0) {
       drivetrain.HamsterDrive.arcadeDrive(0, 0, false);
       timer2.reset();
-      cubePiston.set(Value.kForward);
+      //cubePiston.set(Value.kForward);
 
       timer2.start();
 
-      if (timer2.get() > 1.0) cubePiston.set(Value.kReverse);
+      //if (timer2.get() > 1.0) cubePiston.set(Value.kReverse);
     }
   } 
 
@@ -206,7 +206,7 @@ public class Robot extends TimedRobot {
     * continue until interrupted by another command, remove
     * this line or comment it out.
     */
-    cubePiston.set(Value.kReverse);
+    //cubePiston.set(Value.kReverse);
 
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
@@ -244,7 +244,7 @@ public class Robot extends TimedRobot {
     // if (IO.dController.getRightBumper() && manipulator.raiseTime.get() > 1) manipulator.toggleManipulatorHeight();
     // if (IO.dController.getLeftBumper() && manipulator.grabTime.get() > 1) manipulator.toggleGrabber();
     
-    if (IO.dController.getLeftBumper()) cubePiston.set(Value.kReverse);
+    //if (IO.dController.getLeftBumper()) cubePiston.set(Value.kReverse);
     // if (IO.dController.getRightBumper()) cubePiston.set(Value.kForward);
 
     

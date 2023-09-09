@@ -289,11 +289,22 @@ double steeringAdjust = 0.0;
       m_LedBuffer.setRGB(i, 255, 0, 0);
       m_LedBuffer.setRGB(i+1, 0, 0, 255);
       }
-      else if (IO.dController.getRightBumper() == true && headingError <= 0.2 || headingError >= -0.2){
-        m_LedBuffer.setRGB(i, 0, 255, 0);
+       
+        if (IO.dController.getRightBumper() == true && headingError <= 1 || headingError >= -1){
+        makeLine(16, 0, 255, 0);
+        makeLine( 17, 0, 255, 0);
+         } else if(IO.dController.getRightBumper() == true && headingError > 1){
+          for(int id = 1; i <= 15; i++) {
+            makeLine(id , 255, 165, 0);
+          } } else if(IO.dController.getRightBumper() == true &&  headingError < -1){
+            for(int id = 1; i <= -15; i--){
+                makeLine(id, 255, 165, 0);
+            }
+          }
+        }
       }
-    }
-  }
+  
+
   @Override
   public void testInit() {
     // Cancels all running commands at the start of test mode.
@@ -305,5 +316,11 @@ double steeringAdjust = 0.0;
   public void testPeriodic() {
 
     } 
+
+    private void makeLine(int index, int R, int G, int B){
+      for(int i = 1; i <= 8; i++){
+        m_LedBuffer.setRGB( i, R, G, B);
+      }
+    }
   
-}
+  }

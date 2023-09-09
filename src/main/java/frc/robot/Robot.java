@@ -246,7 +246,7 @@ public class Robot extends TimedRobot {
     double llTurn = -0.1;
     double minTurn = 0.05;
 
-/*NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
+NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
 NetworkTableEntry tx = table.getEntry("tx");
 NetworkTableEntry ty = table.getEntry("ty");
 NetworkTableEntry ta = table.getEntry("ta");
@@ -296,7 +296,7 @@ double steeringAdjust = 0.0;
                 makeLine(id, 255, 165, 0);
             }
           }
-        } */
+        } 
       } 
   
 

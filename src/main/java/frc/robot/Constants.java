@@ -15,11 +15,11 @@ package frc.robot;
 public final class Constants {
 
     // HamsterDrive motor controller ports
-    public static final int leftPPort = 2;
-    public static final int rightPPort = 3;
-    public static final int leftFPort = 4;
-    public static final int rightFPort = 5;
-
+    public static final int leftPPort = 1;
+    public static final int rightPPort = 10;
+    public static final int leftFPort = 0;
+    public static final int rightFPort = 11;
+    
     // Define motor controller port for the manipulator subsystem
     public static final int manipulatorMotorPort = 7;
 
